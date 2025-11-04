@@ -54,8 +54,8 @@ public class EmpController {
      * @param ids
      * @return
      */
-    @PostMapping("/delete")
-    public Result delete(@RequestBody List<Integer> ids){
+    @DeleteMapping("/delete/{ids}")
+    public Result delete(@PathVariable List<Integer> ids){
         log.info("删除员工：{}", ids);
         empService.deleteEmp(ids);
         return Result.success();
@@ -70,5 +70,15 @@ public class EmpController {
         log.info("修改员工：{}", emp);
         empService.updateEmp(emp);
         return Result.success();
+    }
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+    @GetMapping("/findEmpbyId/{id}")
+    public Result findEmpbyId(@PathVariable Integer id){
+        log.info("根据id回显员工：{}", id);
+        return Result.success(empService.findEmpbyId(id));
     }
 }

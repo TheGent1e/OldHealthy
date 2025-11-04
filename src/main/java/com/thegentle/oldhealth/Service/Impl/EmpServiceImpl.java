@@ -6,13 +6,14 @@ import com.thegentle.oldhealth.Mapper.EmpMapper;
 import com.thegentle.oldhealth.Service.EmpService;
 import com.thegentle.oldhealth.pojo.Emp.Emp;
 import com.thegentle.oldhealth.pojo.PageResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Slf4j
 @Service
 public class EmpServiceImpl implements EmpService {
     @Autowired
@@ -30,21 +31,30 @@ public class EmpServiceImpl implements EmpService {
 
     @Override
     public void addEmp(Emp emp) {// 添加员工
-
+        //1、设置创建时间、更新时间
+        emp.setCreatedAt(LocalDateTime.now());
+        emp.setUpdatedAt(LocalDateTime.now());
+        empMapper.addEmp(emp);
     }
 
     @Override
-    public void deleteEmp(List<Integer> id) {// 删除员工
+    public void deleteEmp(List<Integer> ids) {// 删除员工
+        empMapper.deleteEmp(ids);
+        log.info("删除员工：{}", ids);
 
     }
 
     @Override
     public void updateEmp(Emp emp) { // 修改员工
+        emp.setUpdatedAt(LocalDateTime.now());
+        empMapper.updateEmp(emp);
+        log.info("修改员工：{}", emp);
 
     }
 
     @Override
     public Emp findEmpbyId(Integer id) { // 根据id查询员工
-        return null;
+        //1、查询员工
+        return empMapper.findEmpbyId(id);
     }
 }

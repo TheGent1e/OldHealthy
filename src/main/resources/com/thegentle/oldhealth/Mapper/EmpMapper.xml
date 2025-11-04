@@ -62,5 +62,56 @@
             -->
         </where>
     </select>
-
+<!--     添加员工-->
+    <insert id="addEmp" parameterType="com.thegentle.oldhealth.pojo.Emp.Emp">
+    insert into employees(name, gender, position, department_id, phone, status, created_at, updated_at)
+    values(#{name}, #{gender}, #{position}, #{departmentId}, #{phone}, #{status}, #{createdAt}, #{updatedAt})
+    </insert>
+<!--     批量删除员工-->
+    <delete id="deleteEmp" parameterType="java.lang.Integer">
+        <foreach collection="list" item="id" separator="," open="delete from employees where id in (" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--     修改员工-->
+    <update id="updateEmp" parameterType="com.thegentle.oldhealth.pojo.Emp.Emp">
+        update employees
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="position != null">
+                position = #{position},
+            </if>
+            <if test="departmentId != null">
+                department_id = #{departmentId},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+    </update>
+<!--     查询员工-->
+    <select id="findEmpbyId" parameterType="java.lang.Integer" resultType="com.thegentle.oldhealth.pojo.Emp.Emp">
+        select
+        e.id,
+        e.name,
+        e.gender,
+        e.position,
+        d.department_name as department_name,
+        e.department_id,
+        e.phone,
+        e.status,
+        e.created_at,
+        e.updated_at
+        from employees e
+        left join departments d on e.department_id = d.id
+        where e.id = #{id}
+    </select>
 </mapper>

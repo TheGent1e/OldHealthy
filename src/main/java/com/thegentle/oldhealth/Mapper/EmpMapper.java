@@ -11,18 +11,21 @@ import java.util.List;
 @Mapper
 public interface EmpMapper {
 
-
-
     // 条件查询所有员工
     public List<Emp> findAll(String name, Integer gender, String departmentName, String position, LocalDateTime begin, LocalDateTime end);
 
-    // 添加员工
-
     // 删除员工
+    void deleteEmp(List<Integer> ids);
+
+    // 添加员工
+    void addEmp(Emp emp);
 
     // 修改员工
+    void updateEmp(Emp emp);
 
-    // 根据id查询员工
+    Emp findEmpbyId(Integer id);
+
+
 
 
 }

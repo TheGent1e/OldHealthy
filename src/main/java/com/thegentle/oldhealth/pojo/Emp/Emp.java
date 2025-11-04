@@ -15,6 +15,7 @@ import java.util.Date;
 public class Emp {
     private Integer id;             // 员工ID
     private String name;            // 员工姓名
+    private String gender;          // 性别
     private String position;        // 职位
     private Integer departmentId;   // 部门ID
     private String departmentName;  // 部门名称（用于展示）

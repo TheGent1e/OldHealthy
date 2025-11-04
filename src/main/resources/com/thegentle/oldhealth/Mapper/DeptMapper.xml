@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thegentle.oldhealth.Mapper.DeptMapper">
+
+<!--    // 查询部门列表-->
+    <select id="list" resultType="com.thegentle.oldhealth.pojo.Department.Dept">
+        SELECT
+            d.id,
+            d.department_name AS departmentName,
+            d.description,
+            d.manager_id AS managerId,
+            e.name AS managerName,
+            -- 子查询统计：当前部门的在职员工数（关联员工表 department_id）
+            (SELECT COUNT(*)
+             FROM employees emp
+             WHERE emp.department_id = d.id
+               AND emp.status = 1) AS employeeCount, -- 只统计在职员工（status=1）
+            d.created_at,
+            d.updated_at
+        FROM departments d
+                 LEFT JOIN employees e
+                           ON d.manager_id = e.id;
+    </select>
+    <select id="findDeptIdAndName" resultType="com.thegentle.oldhealth.pojo.Department.Dept">
+        SELECT
+            d.id,
+            d.department_name AS departmentName
+        FROM departments d
+                 LEFT JOIN employees e -- 给 employees 表起别名 e
+                           ON d.manager_id = e.id; -- 关联条件：部门的经理ID = 员工表的id（需明确 e.id）;
+    </select>
+</mapper>
