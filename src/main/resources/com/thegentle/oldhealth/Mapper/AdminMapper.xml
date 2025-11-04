@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须和Mapper接口的全路径完全一致（包名+接口名），否则MyBatis找不到对应关系 -->
+<mapper namespace="com.thegentle.oldhealth.Mapper.AdminMapper">
+
+    <!-- 自定义模板集：统计4个表的数据，用Map格式返回 -->
+    <!-- resultMap：定义查询结果和Map的映射关系（key=property，value=查询结果的列名） -->
+    <resultMap id="countMap" type="java.util.HashMap">
+        <!-- property：Map中的key名（自定义，后续取数据用）；column：SQL查询结果的列别名（必须和SQL中AS后的名称一致） -->
+        <result property="employeeCount" column="employee_count"/> <!-- 员工数 -->
+        <result property="departmentCount" column="department_count"/> <!-- 部门数 -->
+        <result property="userCount" column="user_count"/> <!-- 用户数 -->
+        <result property="aiConsultCount" column="ai_consult_count"/> <!-- AI咨询条数 -->
+    </resultMap>
+
+    <!-- select标签：查询操作 -->
+    <!-- id：必须和Mapper接口中的方法名完全一致（countAllData），否则无法映射 -->
+    <!-- resultMap：指定上面定义的resultMap id（countMap），告诉MyBatis如何将查询结果封装成Map -->
+    <select id="countAllData" resultMap="countMap">
+        <!-- SQL逻辑：用4个独立的count查询，通过逗号分隔，最终返回1行数据（4列） -->
+        <!-- count(*)：统计对应表的总记录数；AS 定义列别名，必须和resultMap中的column一致 -->
+        SELECT
+        (SELECT COUNT(*) FROM employees) AS employee_count, -- 统计employees表的员工数
+        (SELECT COUNT(*) FROM departments) AS department_count, -- 统计departments表的部门数（原departnebts拼写错误，已修正）
+        (SELECT COUNT(*) FROM users) AS user_count, -- 统计users表的用户数
+        (SELECT COUNT(*) FROM ai_consultations) AS ai_consult_count -- 统计ai_consultations表的咨询条数
+    </select>
+
+</mapper>

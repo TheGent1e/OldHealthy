@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thegentle.oldhealth.Mapper.EmpMapper">
+    <select id="findAll" resultType="com.thegentle.oldhealth.pojo.Emp.Emp">
+#         员工ID、员工姓名、职位、所属部门、联系电话、状态
+        select
+        e.id,
+        e.name,
+        e.gender, -- 补充查询性别字段（方法参数含 gender，实体类需对应）
+        e.position,
+        d.department_name as department_name,
+        e.phone,
+        e.status,
+        e.created_at, -- 补充创建时间字段
+        e.updated_at  -- 补充更新时间字段
+        from employees e
+        left join departments d on e.department_id = d.id
+        <where>
+            <!-- 员工姓名：模糊查询（如果需要精确匹配，去掉 % 符号） -->
+            <if test="name != null and name != ''">
+                e.name like concat('%', #{name}, '%')
+            </if>
+
+            <!-- 性别：精确匹配（Integer 类型，判断非 null 即可） -->
+            <if test="gender != null">
+                and e.gender = #{gender}
+            </if>
+
+            <!-- 部门名称：关联表查询，模糊匹配 -->
+            <if test="departmentName != null and departmentName != ''">
+                and d.department_name like concat('%', #{departmentName}, '%')
+            </if>
+
+            <!-- 职位：模糊查询 -->
+            <if test="position != null and position != ''">
+                and e.position like concat('%', #{position}, '%')
+            </if>
+
+            <!-- 创建时间：大于等于开始时间 -->
+            <if test="begin != null">
+                and e.created_at &gt;= #{begin}
+            </if>
+
+            <!-- 创建时间/更新时间：小于等于结束时间（根据需求选择，这里默认查创建时间区间） -->
+            <if test="end != null">
+                and e.created_at &lt;= #{end}
+            </if>
+
+            <!-- 可选：如果需要查询更新时间区间，替换上面的 end 条件为：
+            <if test="end != null">
+                and e.update_time &lt;= #{end}
+            </if>
+            或同时查询两个时间区间：
+            <if test="begin != null">
+                and e.create_time &gt;= #{begin}
+            </if>
+            <if test="end != null">
+                and e.update_time &lt;= #{end}
+            </if>
+            -->
+        </where>
+    </select>
+
+</mapper>
