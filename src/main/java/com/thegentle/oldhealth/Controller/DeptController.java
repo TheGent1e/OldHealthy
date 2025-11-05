@@ -49,8 +49,8 @@ public class DeptController {
         return Result.success(dept);
     }
     // 删除部门
-    @DeleteMapping("/delete")
-    public Result delete(@RequestParam List<Integer> ids){
+    @DeleteMapping("/delete/{ids}")
+    public Result delete(@PathVariable List<Integer> ids){
         log.info("删除部门：{}", ids);
         deptService.delete(ids);
         return Result.success();
