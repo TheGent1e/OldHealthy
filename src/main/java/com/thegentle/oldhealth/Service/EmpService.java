@@ -6,6 +6,7 @@ import com.thegentle.oldhealth.pojo.PageResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface EmpService {
     // 查询所有员工
@@ -18,6 +19,7 @@ public interface EmpService {
     public void updateEmp(Emp emp);
     // 查询员工
     public Emp findEmpbyId(Integer id);
+    // 动态查询员工
+    Map<String,Integer> dynamic(String name);
 
-    //条件查询员工
 }

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class EmpServiceImpl implements EmpService {
@@ -56,5 +59,20 @@ public class EmpServiceImpl implements EmpService {
     public Emp findEmpbyId(Integer id) { // 根据id查询员工
         //1、查询员工
         return empMapper.findEmpbyId(id);
+    }
+
+    @Override
+    public Map<String, Integer> dynamic(String name) {
+        //调用mapper
+        List<Emp> list= empMapper.dynamic(name);
+        //转换成map
+        Map<String,Integer> map=list.stream().collect(Collectors.toMap(Emp::getName, Emp::getId));
+//        // 按姓名分组，Lambda 写完整逻辑
+//        Map<String, Integer> map = list.stream()
+//                .collect(Collectors.groupingBy(
+//                        (Emp emp) -> emp.getName(),  // 完整 Lambda：从 emp 里拿 name
+//                        Collectors.summingInt((Emp emp) -> emp.getId())  // 完整 Lambda：从 emp 里拿 id
+//                ));
+        return map;
     }
 }

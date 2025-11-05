@@ -2,31 +2,113 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.thegentle.oldhealth.Mapper.DeptMapper">
 
-<!--    // 查询部门列表-->
+    <!-- 查询部门列表（统一按manager_id IS NULL处理无主理人） -->
     <select id="list" resultType="com.thegentle.oldhealth.pojo.Department.Dept">
         SELECT
             d.id,
             d.department_name AS departmentName,
             d.description,
             d.manager_id AS managerId,
-            e.name AS managerName,
-            -- 子查询统计：当前部门的在职员工数（关联员工表 department_id）
-            (SELECT COUNT(*)
-             FROM employees emp
-             WHERE emp.department_id = d.id
-               AND emp.status = 1) AS employeeCount, -- 只统计在职员工（status=1）
+            -- manager_id为NULL时显示"无"，非NULL时显示员工姓名（兼容员工不存在）
+            CASE
+                WHEN d.manager_id IS NULL THEN '无'
+                ELSE COALESCE(e.name, '无')
+                END AS managerName,
+            -- manager_id为NULL时员工数直接返回0，无需执行子查询
+            CASE
+                WHEN d.manager_id IS NULL THEN 0
+                ELSE (
+                    SELECT COUNT(*)
+                    FROM employees emp
+                    WHERE emp.department_id = d.id
+                      AND emp.status = 1 -- 只统计在职员工
+                )
+                END AS employeeCount,
             d.created_at,
             d.updated_at
         FROM departments d
                  LEFT JOIN employees e
-                           ON d.manager_id = e.id;
+                           ON d.manager_id = e.id
+                               AND d.manager_id IS NOT NULL; -- 优化：manager_id为NULL时不执行无效关联
     </select>
+
+    <!-- 只查询部门ID和部门名称（无需关联员工表，保持优化） -->
     <select id="findDeptIdAndName" resultType="com.thegentle.oldhealth.pojo.Department.Dept">
         SELECT
             d.id,
             d.department_name AS departmentName
-        FROM departments d
-                 LEFT JOIN employees e -- 给 employees 表起别名 e
-                           ON d.manager_id = e.id; -- 关联条件：部门的经理ID = 员工表的id（需明确 e.id）;
+        FROM departments d;
     </select>
+
+    <!-- 根据id查询部门（逻辑保持不变，与list方法统一） -->
+    <select id="findById" resultType="com.thegentle.oldhealth.pojo.Department.Dept">
+        SELECT
+            d.id,
+            d.department_name AS departmentName,
+            d.description,
+            d.manager_id AS managerId,
+            CASE
+                WHEN d.manager_id IS NULL THEN '无'
+                ELSE COALESCE(e.name, '无')
+                END AS managerName,
+            CASE
+                WHEN d.manager_id IS NULL THEN 0
+                ELSE (
+                    SELECT COUNT(*)
+                    FROM employees emp
+                    WHERE emp.department_id = d.id
+                      AND emp.status = 1
+                )
+                END AS employeeCount,
+            d.created_at,
+            d.updated_at
+        FROM departments d
+                 LEFT JOIN employees e
+                           ON d.manager_id = e.id
+                               AND d.manager_id IS NOT NULL
+        WHERE d.id = #{id};
+    </select>
+
+    <!-- 添加部门（增加SQL兜底：若传入0则转为NULL，避免业务层漏处理） -->
+    <insert id="add">
+        INSERT INTO departments(department_name, description, manager_id, created_at, updated_at)
+        VALUES (
+                   #{departmentName},
+                   #{description},
+                   -- 兜底：若业务层未将0转为NULL，SQL层面强制转换
+                   CASE WHEN #{managerId} = 0 THEN NULL ELSE #{managerId} END,
+                   #{createdAt},
+                   #{updatedAt}
+               );
+    </insert>
+
+    <!-- 修改部门（逻辑保持不变，允许传NULL） -->
+    <update id="update">
+        UPDATE departments
+        <set>
+            <if test="departmentName != null and departmentName != ''">
+                department_name = #{departmentName},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="managerId != null"> <!-- 传NULL表示设为无主理人，传具体ID表示指定主理人 -->
+                manager_id = #{managerId},
+            </if>
+            <if test="updatedAt != null">
+                updated_at = #{updatedAt},
+            </if>
+        </set>
+        WHERE id = #{id};
+    </update>
+
+    <!-- 删除部门（逻辑无问题，保持不变） -->
+    <delete id="delete">
+        DELETE FROM departments
+        WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

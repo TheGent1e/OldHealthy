@@ -1,6 +1,8 @@
 package com.thegentle.oldhealth.pojo.Department;
 
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -14,6 +16,6 @@ public class Dept {
     private Integer managerId;      // 部门经理ID
     private String managerName;     // 部门经理姓名（用于展示）
     private Integer employeeCount; // 新增：部门人数（在职）
-    private Date createdAt;         // 创建时间
-    private Date updatedAt;         // 更新时间
+    private LocalDateTime createdAt;         // 创建时间
+    private LocalDateTime updatedAt;         // 更新时间
 }

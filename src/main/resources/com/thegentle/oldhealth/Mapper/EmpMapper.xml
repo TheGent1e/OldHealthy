@@ -114,4 +114,14 @@
         left join departments d on e.department_id = d.id
         where e.id = #{id}
     </select>
+<!--    // 动态查询员工-->
+    <select id="dynamic" resultType="com.thegentle.oldhealth.pojo.Emp.Emp">
+        select id, name
+        from employees
+        <where>
+            <if test="name != null">
+                name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
 </mapper>

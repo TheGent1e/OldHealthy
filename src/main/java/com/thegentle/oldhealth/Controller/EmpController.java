@@ -81,4 +81,9 @@ public class EmpController {
         log.info("根据id回显员工：{}", id);
         return Result.success(empService.findEmpbyId(id));
     }
+//    动态部门经理
+    @GetMapping("/dynamic")
+    public Result dynamic(@RequestParam String name){
+        return Result.success(empService.dynamic(name));
+    }
 }

@@ -6,6 +6,7 @@ import com.thegentle.oldhealth.pojo.Department.Dept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,23 +22,40 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public void add(Dept dept) {
-
+    public String add(Dept dept) {
+        // 检查部门名称是否已存在（排除当前部门）
+        Dept existingDept = deptMapper.findByName(dept.getDepartmentName());
+        if (existingDept != null && !existingDept.getId().equals(dept.getId())) {
+            return "部门名称已经存在";
+        }
+        //设置创建时间、更新时间
+        dept.setCreatedAt(LocalDateTime.now());
+        dept.setUpdatedAt(LocalDateTime.now());
+        deptMapper.add(dept);
+        return null;
     }
 
     @Override
-    public void update(Dept dept) {
-
+    public String update(Dept dept) {
+        // 检查部门名称是否已存在（排除当前部门）
+        Dept existingDept = deptMapper.findByName(dept.getDepartmentName());
+        if (existingDept != null && !existingDept.getId().equals(dept.getId())) {
+            return "部门名称已经存在";
+        }
+        //修改时间
+        dept.setUpdatedAt(LocalDateTime.now());
+        deptMapper.update(dept);
+        return null;
     }
 
     @Override
     public void delete(List<Integer> ids) {
-
+        deptMapper.delete(ids);
     }
 
     @Override
     public Dept findById(Integer id) {
-        return null;
+        return deptMapper.findById(id);
     }
 
     @Override // 根据部门名称查询部门

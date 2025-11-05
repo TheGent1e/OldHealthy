@@ -11,9 +11,9 @@ public interface DeptService {
     // 查询部门列表
     public List<Dept> list();
     // 添加部门
-    public void add(Dept dept);
+    public String add(Dept dept);
     // 修改部门
-    public void update(Dept dept);
+    public String update(Dept dept);
     // 删除部门
     public void delete(List<Integer> ids);
     // 根据id查询部门
