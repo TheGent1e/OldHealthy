@@ -31,6 +31,8 @@ public class DeptServiceImpl implements DeptService {
         //设置创建时间、更新时间
         dept.setCreatedAt(LocalDateTime.now());
         dept.setUpdatedAt(LocalDateTime.now());
+//        //设置部门id
+//        dept.setId(deptMapper.count() + 1);
         deptMapper.add(dept);
         return null;
     }

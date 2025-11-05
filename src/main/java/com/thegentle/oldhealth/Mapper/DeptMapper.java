@@ -25,5 +25,9 @@ public interface DeptMapper {
     @Select("SELECT id FROM departments WHERE department_name = #{departDepartName}")
     Dept findByName(String departDepartName);
 
+    //统计部门数量
+    @Select("SELECT COUNT(*) FROM departments")
+    int count();
+
 
 }
