@@ -96,6 +96,7 @@
                 status = #{status},
             </if>
         </set>
+        where id = #{id}
     </update>
 <!--     查询员工-->
     <select id="findEmpbyId" parameterType="java.lang.Integer" resultType="com.thegentle.oldhealth.pojo.Emp.Emp">
