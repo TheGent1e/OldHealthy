@@ -14,4 +14,10 @@ public interface UserMapper {
     //获取用户基本信息
     @Select("select id,username,name,role from users where username = #{id}")
     User getUserBasicInfo(User user);
+
+    void deleteUser(User user);
+
+    void updateUser(User user);
+
+    void addUser(User user);
 }

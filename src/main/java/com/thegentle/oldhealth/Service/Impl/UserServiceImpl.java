@@ -2,6 +2,7 @@ package com.thegentle.oldhealth.Service.Impl;
 
 import com.thegentle.oldhealth.Mapper.UserMapper;
 import com.thegentle.oldhealth.Service.UserService;
+import com.thegentle.oldhealth.pojo.PageResponse;
 import com.thegentle.oldhealth.pojo.User.UserBasicInfo;
 import com.thegentle.oldhealth.pojo.User.User;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.thegentle.oldhealth.utils.JWTutils;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -68,6 +70,36 @@ public class UserServiceImpl implements UserService {
         if(TempUser!=null){
             return TempUser;
         }
+        return null;
+    }
+    //添加用户
+    @Override
+    public User addUser(User user) {
+        log.info("addUser:{}",user);
+        userMapper.addUser(user);
+        return null;
+    }
+    //修改用户
+    @Override
+    public void updateUser(User user) {
+        log.info("updateUser:{}",user);
+        userMapper.updateUser(user);
+
+    }
+    //删除用户
+    @Override
+    public void deleteUser(User user) {
+        log.info("deleteUser:{}",user);
+        userMapper.deleteUser(user);
+        return;
+
+    }
+    //分页获取用户列表
+    @Override
+    public PageResponse<User> getUserList(Integer page, Integer pageSize,String username) {
+
+        //1、设置pagerHelper
+
         return null;
     }
 }
