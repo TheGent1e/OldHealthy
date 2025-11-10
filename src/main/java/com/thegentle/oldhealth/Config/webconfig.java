@@ -18,6 +18,7 @@ public class webconfig implements WebMvcConfigurer {
         //注册添加拦截器
         registry.addInterceptor(tokenInterceptor)
                         .addPathPatterns("/**")       //拦截所有请求
-                .excludePathPatterns("/user/login"); //登录接口不拦截
+                    .excludePathPatterns("/login")  //登录接口不拦截
+                .excludePathPatterns("/register");  //注册接口不拦截
     }
 }

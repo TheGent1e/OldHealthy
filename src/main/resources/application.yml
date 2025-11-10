@@ -3,7 +3,7 @@ spring:
       name=OldHealth
 
 #    ???
-  #mysql????
+  #mysql连接配置
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/olderhealthy
@@ -12,6 +12,6 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    # ???????????????????????
+    # 开启下划线转驼峰（解决字段名与属性名映射问题）
     map-underscore-to-camel-case: true
 

@@ -4,6 +4,9 @@ import com.thegentle.oldhealth.pojo.User.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     // 用户登录
@@ -20,4 +23,6 @@ public interface UserMapper {
     void updateUser(User user);
 
     void addUser(User user);
+
+    List<User> getUserList(String username, String phone, String email, Integer role, String status, LocalDateTime begin, LocalDateTime end);
 }

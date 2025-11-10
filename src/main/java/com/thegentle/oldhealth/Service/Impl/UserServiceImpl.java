@@ -1,5 +1,7 @@
 package com.thegentle.oldhealth.Service.Impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.thegentle.oldhealth.Mapper.UserMapper;
 import com.thegentle.oldhealth.Service.UserService;
 import com.thegentle.oldhealth.pojo.PageResponse;
@@ -9,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.thegentle.oldhealth.utils.JWTutils;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,14 +56,20 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User register(User user) {
+    public Integer register(User user) {
         //掉用Mapper层
         ///1.判断用户名是否已存在
         User TempUser= userMapper.SelectByUsernameAndPassword(user);
         if(TempUser==null){
+            user.setStatus("active");
+            user.setRole(1);
+            //1.设置创建时间
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
             userMapper.register(user);
+            return 1;
         }
-        return null;
+        return 0;
     }
     //获取用户基本信息
     @Override
@@ -96,10 +106,14 @@ public class UserServiceImpl implements UserService {
     }
     //分页获取用户列表
     @Override
-    public PageResponse<User> getUserList(Integer page, Integer pageSize,String username) {
+    public PageResponse<User> getUserList(String username, String phone, String email, Integer role, String status, LocalDateTime begin, LocalDateTime end, Integer page, Integer pageSize) {
 
         //1、设置pagerHelper
-
-        return null;
+        PageHelper.startPage(page,pageSize);
+        List<User> users=userMapper.getUserList(username,phone,email,role,status,begin,end);
+        //2、获取分页数据
+        Page<User> p=(Page<User>) users;
+        //3、返回
+        return new PageResponse<>(p.getResult(),p.getTotal());
     }
 }

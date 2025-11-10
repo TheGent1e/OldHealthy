@@ -2,6 +2,8 @@ package com.thegentle.oldhealth.pojo.User;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * 用户创建请求
  */
@@ -18,4 +20,6 @@ public class User {
     private String healthRecordNumber;  // 健康档案号
     private Integer role;               // 角色（默认1，表示user）
     private String status;              // 状态（默认active）
+    private LocalDateTime createdAt;         // 创建时间
+    private LocalDateTime updatedAt;         // 更新时间
 }

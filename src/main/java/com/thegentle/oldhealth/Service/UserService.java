@@ -10,7 +10,7 @@ public interface UserService {
     //登录
     UserBasicInfo login(User user);
     //注册
-    User register(User user);
+    Integer register(User user);
     //获取用户基本信息
     User getUserBasicInfo(User user);
     //添加 用户
