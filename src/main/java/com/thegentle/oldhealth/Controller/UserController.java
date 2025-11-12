@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Slf4j
@@ -63,7 +64,8 @@ public class UserController {
     @GetMapping("/user/addUser")
     public Result addUser(@RequestBody User user) {
         log.info("addUser:{}",user);
-        return Result.success(userService.addUser(user));
+        userService.addUser(user);
+        return Result.success();
     }
     //修改用户
     @PostMapping("/user/updateUser")
@@ -73,10 +75,10 @@ public class UserController {
         return Result.success();
     }
     //删除用户
-    @PostMapping("/user/deleteUser")
-    public Result deleteUser(@RequestBody User user) {
-        log.info("deleteUser:{}",user);
-        userService.deleteUser(user);
+    @PostMapping("/user/deleteUser/{ids}")
+    public Result deleteUser(@PathVariable List<Integer> ids) {
+        log.info("deleteUser:{}",ids);
+        userService.deleteUser(ids);
         return Result.success();
     }
 }

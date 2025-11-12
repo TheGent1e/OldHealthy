@@ -57,21 +57,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer register(User user) {
-        //掉用Mapper层
-        ///1.判断用户名是否已存在
-        User TempUser= userMapper.SelectByUsernameAndPassword(user);
-        if(TempUser==null){
-            user.setStatus("active");
-            user.setRole(1);
-            //1.设置创建时间
-            user.setCreatedAt(LocalDateTime.now());
-            user.setUpdatedAt(LocalDateTime.now());
-            userMapper.register(user);
-            return 1;
+        // 1. 优化：判断用户名是否已存在（只需查用户名，无需密码）
+        User existingUser = userMapper.selectByUsername(user.getUsername());
+        if (existingUser != null) {
+            return 0; // 用户名已存在，注册失败
         }
-        return 0;
-    }
-    //获取用户基本信息
+
+        // 2. 设置用户基础信息（暂时不设置健康档案号）
+        user.setStatus("active");
+        user.setRole(1);
+        user.setRegisterTime(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        // 3. 插入用户到数据库：此时MyBatis会将数据库自动生成的ID回写到user的id字段
+        userMapper.register(user);
+
+        // 4. 关键：此时user.getId()已不为null，生成健康档案号
+        String healthRecordNumber = user.getUsername() + "-" + user.getId();
+        user.setHealthRecordNumber(healthRecordNumber);
+        // 5. 更新健康档案号（同时更新updatedAt）
+        user.setUpdatedAt(LocalDateTime.now());
+        userMapper.updateHealthRecordNumber(user);
+
+        return 1; // 注册成功
+    }    //获取用户基本信息
     @Override
     public User getUserBasicInfo(User user) {
         log.info("getUserBasicInfo:{}",user);
@@ -84,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
     //添加用户
     @Override
-    public User addUser(User user) {
+    public Integer addUser(User user) {
         log.info("addUser:{}",user);
         userMapper.addUser(user);
         return null;
@@ -98,11 +108,8 @@ public class UserServiceImpl implements UserService {
     }
     //删除用户
     @Override
-    public void deleteUser(User user) {
-        log.info("deleteUser:{}",user);
-        userMapper.deleteUser(user);
-        return;
-
+    public void deleteUser(List<Integer> ids) {
+        userMapper.deleteUser(ids);
     }
     //分页获取用户列表
     @Override

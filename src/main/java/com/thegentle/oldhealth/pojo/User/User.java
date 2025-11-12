@@ -22,4 +22,6 @@ public class User {
     private String status;              // 状态（默认active）
     private LocalDateTime createdAt;         // 创建时间
     private LocalDateTime updatedAt;         // 更新时间
+    private LocalDateTime registerTime;     // 注册时间
+    private LocalDateTime lastLoginTime;    // 最后登录时间
 }
