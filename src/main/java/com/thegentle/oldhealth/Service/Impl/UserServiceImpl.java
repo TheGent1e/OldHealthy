@@ -92,13 +92,28 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-    //添加用户
     @Override
     public Integer addUser(User user) {
         log.info("addUser:{}",user);
+        // 检查用户名是否已存在
+        User existingUser = userMapper.selectByUsername(user.getUsername());
+        if (existingUser != null) {
+            return 0; // 或者抛出自定义异常，表示用户名已存在
+        }
+        //设置用户类型
+        user.setRole(1);
+        //设置status
+        user.setStatus("active");
+        //createdAt
+        user.setCreatedAt(LocalDateTime.now());
+        //updatedAt
+        user.setUpdatedAt(LocalDateTime.now());
+        //registerTime
+        user.setRegisterTime(LocalDateTime.now());
         userMapper.addUser(user);
-        return null;
+        return 1; // 返回1表示添加成功
     }
+
     //修改用户
     @Override
     public void updateUser(User user) {

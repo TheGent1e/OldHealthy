@@ -47,7 +47,7 @@ public class UserController {
         return Result.success(userService.getUserBasicInfo(user));
     }
     //分页获取用户列表
-    @PostMapping("/user/getUserList")
+    @GetMapping("/user/getUserList")
     public Result getUserList(String username,
                               String phone,
                               String email,
@@ -61,11 +61,11 @@ public class UserController {
         return Result.success(userService.getUserList(username,phone,email,role,status,begin,end,page,pageSize));
     }
     //添加 用户
-    @GetMapping("/user/addUser")
+    @PostMapping("/user/addUser")
     public Result addUser(@RequestBody User user) {
         log.info("addUser:{}",user);
-        userService.addUser(user);
-        return Result.success();
+
+        return userService.addUser(user)==1?Result.success():Result.error("添加失败");
     }
     //修改用户
     @PostMapping("/user/updateUser")
